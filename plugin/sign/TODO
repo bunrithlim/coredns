@@ -1,0 +1,5 @@
+* setup function
+* glue, delegation 
+* go-routine, per zone to sign, stop and reload etc?
+* more tests
+* need sorted types out of e.Elem.Types()
