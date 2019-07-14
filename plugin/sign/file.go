@@ -12,7 +12,7 @@ import (
 )
 
 // write writes out the zone file to a temporary file which is then move into the correct place.
-func (s Sign) write(z *file.Zone) error {
+func (s Signer) write(z *file.Zone) error {
 	f, err := ioutil.TempFile(s.directory, "signed-")
 	if err != nil {
 		return err
