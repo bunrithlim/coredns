@@ -1,4 +1,4 @@
-package file
+package sign
 
 import (
 	"github.com/coredns/coredns/plugin"
