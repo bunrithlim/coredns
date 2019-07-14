@@ -10,8 +10,8 @@ import (
 	"github.com/miekg/dns"
 )
 
-// Sign holds the data need to sign a zone file.
-type Sign struct {
+// Signer holds the data need to sign a zone file.
+type Signer struct {
 	keys   []Pair
 	origin string
 
@@ -27,7 +27,7 @@ type Sign struct {
 var log = clog.NewWithPlugin("sign")
 
 // Sign signs a zone file according to the parameters in s.
-func (s Sign) Sign(origin string) error {
+func (s Signer) Sign(origin string) error {
 	now := time.Now()
 
 	rd, err := os.Open(s.dbfile)
