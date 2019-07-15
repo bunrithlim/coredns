@@ -4,8 +4,6 @@ import (
 	"io"
 	"time"
 
-	"github.com/coredns/coredns/plugin/file"
-
 	"github.com/miekg/dns"
 )
 
@@ -13,9 +11,8 @@ import (
 // has only 2 weeks left this function will return true. If the SOA isn't found in the first
 // 100 records it will return true.
 func Resign(rd io.Reader, now time.Time) bool {
-	zp := dns.NewZoneParser(f, ".", "resign")
+	zp := dns.NewZoneParser(rd, ".", "resign")
 	zp.SetIncludeAllowed(true)
-	z := file.NewZone(origin, "resign")
 
 	i := 0
 	expir := now.Add(14 * 24 * time.Hour) // if expired within 2 weeks, resign

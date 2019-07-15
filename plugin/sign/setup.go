@@ -14,14 +14,20 @@ func init() {
 }
 
 func setup(c *caddy.Controller) error {
-	zones, err := parse(c)
+	_, err := parse(c)
 	if err != nil {
 		return plugin.Error("sign", err)
 	}
 
+	// Don't call AddPlugin, *sign* is not a plugin.
 	return nil
 }
 
-func parse(c *caddy.Controller) error {
-	return nil
+func parse(c *caddy.Controller) (*Sign, error) {
+	for c.Next() {
+
+		// c.NextBlock() ...
+	}
+
+	return nil, nil
 }

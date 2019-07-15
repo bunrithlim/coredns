@@ -1,6 +1,7 @@
 package sign
 
 import (
+	"math/rand"
 	"os"
 	"time"
 
@@ -9,6 +10,8 @@ import (
 
 	"github.com/miekg/dns"
 )
+
+var log = clog.NewWithPlugin("sign")
 
 // Signer holds the data need to sign a zone file.
 type Signer struct {
@@ -22,9 +25,18 @@ type Signer struct {
 	directory  string
 	dbfile     string
 	signedfile string
+
+	jitter time.Duration
 }
 
-var log = clog.NewWithPlugin("sign")
+// New returns a new signer.
+func New() Signer {
+	s := Signer{
+		jitter: time.Duration(-5 * rand.Float32() * float32(time.Hour) * 24),
+	}
+
+	return s
+}
 
 // Sign signs a zone file according to the parameters in s.
 func (s Signer) Sign(origin string) error {
@@ -35,7 +47,7 @@ func (s Signer) Sign(origin string) error {
 		return err
 	}
 
-	z, err := parse(rd, origin, s.dbfile)
+	z, err := Parse(rd, origin, s.dbfile)
 	if err != nil {
 		return err
 	}

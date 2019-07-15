@@ -2,8 +2,8 @@ package sign
 
 import "github.com/coredns/coredns/plugin"
 
-type sign struct {
-	signers []signer
+type Sign struct {
+	signers []Signer
 
 	Next plugin.Handler
 }
