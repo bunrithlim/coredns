@@ -61,7 +61,7 @@ sign DBFILE [ZONES...] {
    If not given this defaults to `/var/lib/coredns`. The zones are saved under the name
    `db.<name>.signed`.
 *  `jitter` will be applied to the sign date of 15:00 UTC Thursday, so avoid a stampeding herd of
-   zones waiting to be signed. This default to 5 days.
+   zones waiting to be signed. This default to [-5,0] days.
 
 ## Examples
 
