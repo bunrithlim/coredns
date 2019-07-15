@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/mholt/caddy"
 	"github.com/miekg/dns"
 	"golang.org/x/crypto/ed25519"
 )
@@ -19,9 +20,33 @@ type Pair struct {
 	Private crypto.Signer
 }
 
-// readKeyPair read the public and private key from disk. origin is used as the ownername of the
-// the DNSKEY record, potentially overwriting the original one.
-func readKeyPair(public, private, origin string) (Pair, error) {
+// keyParse reads the public and private key from disk.
+func keyParse(c *caddy.Controller) ([]Pair, error) {
+	if !c.NextArg() {
+		return nil, c.ArgErr()
+	}
+	pairs := []Pair{}
+
+	println("ffdfd")
+	switch c.Val() {
+	case "file":
+		ks := c.RemainingArgs()
+		if len(ks) == 0 {
+			return nil, c.ArgErr()
+		}
+		pair, err := readKeyPair(ks[0]+".key", ks[0]+".private")
+		if err != nil {
+			return nil, err
+		}
+		pairs = append(pairs, pair)
+	case "directory":
+		return nil, fmt.Errorf("directory: not implemented")
+	}
+
+	return pairs, nil
+}
+
+func readKeyPair(public, private string) (Pair, error) {
 	rk, err := os.Open(public)
 	if err != nil {
 		return Pair{}, err
@@ -41,7 +66,6 @@ func readKeyPair(public, private, origin string) (Pair, error) {
 	if !ksk {
 		return Pair{}, fmt.Errorf("DNSKEY in %q, DNSKEY is not a CSK/KSK", public)
 	}
-	dnskey.(*dns.DNSKEY).Header().Name = origin
 
 	rp, err := os.Open(private)
 	if err != nil {

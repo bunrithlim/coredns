@@ -9,7 +9,7 @@ import (
 
 // Resign will scan rd and check the signature on the SOA record. If that record
 // has only 2 weeks left this function will return true. If the SOA isn't found in the first
-// 100 records it will return true.
+// 100 records it will return false.
 func Resign(rd io.Reader, now time.Time) bool {
 	zp := dns.NewZoneParser(rd, ".", "resign")
 	zp.SetIncludeAllowed(true)
@@ -29,8 +29,8 @@ func Resign(rd io.Reader, now time.Time) bool {
 		}
 		i++
 		if i > 100 {
-			return true
+			return false
 		}
 	}
-	return true
+	return false
 }

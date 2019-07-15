@@ -1,7 +1,6 @@
 package sign
 
 import (
-	"math/rand"
 	"os"
 	"time"
 
@@ -15,27 +14,17 @@ var log = clog.NewWithPlugin("sign")
 
 // Signer holds the data need to sign a zone file.
 type Signer struct {
-	keys   []Pair
-	origin string
+	keys      []Pair
+	origin    string
+	dbfile    string
+	directory string
+	jitter    time.Duration
+
+	signedfile string
 
 	expiration uint32
 	inception  uint32
 	ttl        uint32
-
-	directory  string
-	dbfile     string
-	signedfile string
-
-	jitter time.Duration
-}
-
-// New returns a new signer.
-func New() Signer {
-	s := Signer{
-		jitter: time.Duration(-5 * rand.Float32() * float32(time.Hour) * 24),
-	}
-
-	return s
 }
 
 // Sign signs a zone file according to the parameters in s.

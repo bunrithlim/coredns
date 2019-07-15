@@ -22,7 +22,9 @@ it do key rollovers - it just signs.
 
 *Sign* will:
 
-* (Re)-sign the zone with the CSK(s) every Thursday at 15:00 UTC (+/- generous jitter).
+* (Re)-sign the zone with the CSK(s) every Thursday at 15:00 UTC (- generous jitter).
+  The jitter will be applied to avoid a stampeding herd of zones waiting to be signed.
+  This default to random amount between -5 to 0 days.
 * Create signatures that have an inception of -3H and expiration of +3W for every key given.
 * Add or replace *all* apex CDS/CDNSKEY records with the ones derived from the given keys. For each
   key two CDS are created one with SHA1 and another with SHA256.
@@ -44,9 +46,8 @@ resigned.
 
 ~~~
 sign DBFILE [ZONES...] {
-    key file|directory KEY|DIR...
+    keys file|directory KEY...|DIR...
     directory DIR
-    jitter 5d
 }
 ~~~
 
@@ -54,14 +55,12 @@ sign DBFILE [ZONES...] {
    *root* directive will be prepended to it.
 *  **ZONES** zones it should be sign for. If empty, the zones from the configuration block are
    used.
- *  `key` specifies the keys (it can be specified multiple times) to sign the zone. If `file` is
-    used the **KEY**'s filename is used as is. If `directory` is used, *sign* will look in **DIR**
+ *  `keys` specifies the keys (there can be multiple) to sign the zone. If `file` is
+    used the **KEY**'s filenames are used as is. If `directory` is used, *sign* will look in **DIR**
     for `K<name>+<alg>+<id>` files.
 *  `directory` specifies the **DIR** where CoreDNS should save zones that have been signed.
    If not given this defaults to `/var/lib/coredns`. The zones are saved under the name
    `db.<name>.signed`.
-*  `jitter` will be applied to the sign date of 15:00 UTC Thursday, so avoid a stampeding herd of
-   zones waiting to be signed. This default to [-5,0] days.
 
 ## Examples
 
@@ -72,7 +71,7 @@ Sign the `example.org` zone contained in the file `db.example.org` and write to 
 example.org {
     file /var/lib/coredns/db.example.org.signed
     sign db.example.org {
-        key directory /etc/coredns/keys
+        key file /etc/coredns/keys/Kexample.org
     }
 }
 ~~~
