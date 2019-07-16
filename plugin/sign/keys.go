@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/coredns/coredns/core/dnsserver"
+
 	"github.com/mholt/caddy"
 	"github.com/miekg/dns"
 	"golang.org/x/crypto/ed25519"
@@ -28,6 +30,7 @@ func keyParse(c *caddy.Controller) ([]Pair, error) {
 		return nil, c.ArgErr()
 	}
 	pairs := []Pair{}
+	config := dnsserver.GetConfig(c)
 
 	switch c.Val() {
 	case "file":
