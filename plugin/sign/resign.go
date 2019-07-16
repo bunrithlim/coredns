@@ -11,6 +11,7 @@ import (
 // has only 2 weeks left this function will return true. If the SOA isn't found in the first
 // 100 records it will return false.
 func Resign(rd io.Reader, now time.Time) bool {
+	now = now.UTC()
 	zp := dns.NewZoneParser(rd, ".", "resign")
 	zp.SetIncludeAllowed(true)
 

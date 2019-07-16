@@ -25,6 +25,8 @@ func setup(c *caddy.Controller) error {
 		return plugin.Error("sign", err)
 	}
 
+	// start signing routines
+
 	// Don't call AddPlugin, *sign* is not a plugin.
 	return nil
 }
@@ -59,6 +61,7 @@ func parse(c *caddy.Controller) (*Sign, error) {
 				origin:     plugin.Host(origins[i]).Normalize(),
 				jitter:     time.Duration(-5 * rand.Float32() * float32(time.Hour) * 24),
 				directory:  "/var/lib/coredns",
+				stop:       make(chan struct{}),
 				signedfile: fmt.Sprintf("db.%ssigned", origins[i]),
 			}
 		}

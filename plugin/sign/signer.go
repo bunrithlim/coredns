@@ -21,6 +21,7 @@ type Signer struct {
 	jitter    time.Duration
 
 	signedfile string
+	stop       chan struct{}
 
 	expiration uint32
 	inception  uint32
@@ -28,9 +29,8 @@ type Signer struct {
 }
 
 // Sign signs a zone file according to the parameters in s.
-func (s Signer) Sign() error {
-	now := time.Now()
-
+func (s Signer) Sign(now time.Time) error {
+	now = now.UTC()
 	rd, err := os.Open(s.dbfile)
 	if err != nil {
 		return err

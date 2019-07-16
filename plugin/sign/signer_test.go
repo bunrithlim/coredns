@@ -3,6 +3,7 @@ package sign
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/mholt/caddy"
 )
@@ -21,7 +22,7 @@ func TestSign(t *testing.T) {
 		t.Fatalf("Expected 1 signer got %d", len(sign.signers))
 	}
 	defer os.Remove("db.miek.nl.signed")
-	if err := sign.signers[0].Sign(); err != nil {
+	if err := sign.signers[0].Sign(time.Now()); err != nil {
 		t.Error(err)
 	}
 }
