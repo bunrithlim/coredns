@@ -55,9 +55,10 @@ sign DBFILE [ZONES...] {
    *root* directive will be prepended to it.
 *  **ZONES** zones it should be sign for. If empty, the zones from the configuration block are
    used.
- *  `keys` specifies the keys (there can be multiple) to sign the zone. If `file` is
-    used the **KEY**'s filenames are used as is. If `directory` is used, *sign* will look in **DIR**
-    for `K<name>+<alg>+<id>` files.
+* `keys` specifies the keys (there can be multiple) to sign the zone. If `file` is
+   used the **KEY**'s filenames are used as is. If `directory` is used, *sign* will look in **DIR**
+   for `K<name>+<alg>+<id>` files. Any metadata in these files (Activate, Publish, etc.) is
+   *ignored*.
 *  `directory` specifies the **DIR** where CoreDNS should save zones that have been signed.
    If not given this defaults to `/var/lib/coredns`. The zones are saved under the name
    `db.<name>.signed`.
@@ -111,4 +112,4 @@ manual pages coredns-keygen(1) and dnssec-keygen(8). And the *file* plugin's doc
 
 ## Bugs
 
-`keys directory` is not implemented.
+`keys directory` is not implemented, nor is coredns-keygen.
