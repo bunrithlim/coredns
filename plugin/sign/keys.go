@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/mholt/caddy"
 	"github.com/miekg/dns"
@@ -33,11 +35,25 @@ func keyParse(c *caddy.Controller) ([]Pair, error) {
 		if len(ks) == 0 {
 			return nil, c.ArgErr()
 		}
-		pair, err := readKeyPair(ks[0]+".key", ks[0]+".private")
-		if err != nil {
-			return nil, err
+		for _, k := range ks {
+			base := k
+			// Kmiek.nl.+013+26205.key, handle .private or without extension: Kmiek.nl.+013+26205
+			if strings.HasSuffix(k, ".key") {
+				base = k[:len(k)-4]
+			}
+			if strings.HasSuffix(k, ".private") {
+				base = k[:len(k)-8]
+			}
+			if !filepath.IsAbs(base) && config.Root != "" {
+				base = filepath.Join(config.Root, base)
+			}
+
+			pair, err := readKeyPair(base+".key", base+".private")
+			if err != nil {
+				return nil, err
+			}
+			pairs = append(pairs, pair)
 		}
-		pairs = append(pairs, pair)
 	case "directory":
 		return nil, fmt.Errorf("directory: not implemented")
 	}

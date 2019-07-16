@@ -70,6 +70,7 @@ Sign the `example.org` zone contained in the file `db.example.org` and write to 
 ~~~
 example.org {
     file /var/lib/coredns/db.example.org.signed
+
     sign db.example.org {
         key file /etc/coredns/keys/Kexample.org
     }
@@ -107,3 +108,7 @@ example.org example.net {
 
 The DNSSEC RFCs: RFC 4033, RFC 4034 and RFC 4035. And the BCP on DNSSEC, RFC 6781. Further more the
 manual pages coredns-keygen(1) and dnssec-keygen(8). And the *file* plugin's documentation.
+
+## Bugs
+
+`keys directory` is not implemented.
