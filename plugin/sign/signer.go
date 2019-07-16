@@ -28,7 +28,7 @@ type Signer struct {
 }
 
 // Sign signs a zone file according to the parameters in s.
-func (s Signer) Sign(origin string) error {
+func (s Signer) Sign() error {
 	now := time.Now()
 
 	rd, err := os.Open(s.dbfile)
@@ -36,19 +36,18 @@ func (s Signer) Sign(origin string) error {
 		return err
 	}
 
-	z, err := Parse(rd, origin, s.dbfile)
+	z, err := Parse(rd, s.origin, s.dbfile)
 	if err != nil {
 		return err
 	}
 
 	s.inception, s.expiration = lifetime(time.Now().UTC())
-	s.origin = origin
 
 	s.ttl = z.Apex.SOA.Header().Ttl
 	z.Apex.SOA.Serial = uint32(time.Now().Unix())
-	names := names(origin, z)
+	names := names(s.origin, z)
 
-	nsec := NSEC(origin, next(origin, names, 0), s.ttl, []uint16{dns.TypeSOA, dns.TypeNS}) // need to dish out correct types
+	nsec := NSEC(s.origin, next(s.origin, names, 0), s.ttl, []uint16{dns.TypeSOA, dns.TypeNS}) // need to dish out correct types
 	z.Insert(nsec)
 
 	for _, pair := range s.keys {
@@ -77,7 +76,7 @@ func (s Signer) Sign(origin string) error {
 	// We are walking the tree in the same direction, so names[] can be used here to indicated the next element.
 	i := 1
 	z.Tree.Do(func(e *tree.Elem) bool {
-		nsec := NSEC(e.Name(), next(origin, names, i), s.ttl, []uint16{dns.TypeSOA, dns.TypeNS}) // e.Types() or something
+		nsec := NSEC(e.Name(), next(s.origin, names, i), s.ttl, []uint16{dns.TypeSOA, dns.TypeNS}) // e.Types() or something
 		z.Insert(nsec)
 		// nsec ownername should be OK.
 
@@ -99,7 +98,7 @@ func (s Signer) Sign(origin string) error {
 
 	s.write(z) // error handling, once booleans are gone
 
-	log.Infof("Signed %q with %d key(s) in %s, saved in %q", origin, len(s.keys), time.Since(now), s.signedfile)
+	log.Infof("Signed %q with %d key(s) in %s, saved in %q", s.origin, len(s.keys), time.Since(now), s.signedfile)
 
 	return nil
 }

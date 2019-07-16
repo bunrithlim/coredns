@@ -42,14 +42,9 @@ func parse(c *caddy.Controller) (*Sign, error) {
 			dbfile = filepath.Join(config.Root, dbfile)
 		}
 
-		args := c.RemainingArgs()
-		if len(args) == 0 {
-			return nil, c.ArgErr()
-		}
-
 		origins := make([]string, len(c.ServerBlockKeys))
 		copy(origins, c.ServerBlockKeys)
-		args = c.RemainingArgs()
+		args := c.RemainingArgs()
 		if len(args) > 0 {
 			origins = args
 		}
@@ -61,7 +56,7 @@ func parse(c *caddy.Controller) (*Sign, error) {
 				origin:     plugin.Host(origins[i]).Normalize(),
 				jitter:     time.Duration(-5 * rand.Float32() * float32(time.Hour) * 24),
 				directory:  "/var/lib/coredns",
-				signedfile: fmt.Sprintf("db.%s.signed", origins[i]),
+				signedfile: fmt.Sprintf("db.%ssigned", origins[i]),
 			}
 		}
 
@@ -85,13 +80,14 @@ func parse(c *caddy.Controller) (*Sign, error) {
 				}
 				for i := range signers {
 					signers[i].directory = dir[0]
-					signers[i].signedfile = fmt.Sprintf("db.%s.signed", signers[i].origin)
+					signers[i].signedfile = fmt.Sprintf("db.%ssigned", signers[i].origin)
 				}
 			default:
 				return nil, c.Errf("unknown property '%s'", c.Val())
 			}
 		}
+		sign.signers = append(sign.signers, signers...)
 	}
 
-	return nil, nil
+	return sign, nil
 }

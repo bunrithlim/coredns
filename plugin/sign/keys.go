@@ -27,7 +27,6 @@ func keyParse(c *caddy.Controller) ([]Pair, error) {
 	}
 	pairs := []Pair{}
 
-	println("ffdfd")
 	switch c.Val() {
 	case "file":
 		ks := c.RemainingArgs()
