@@ -48,6 +48,9 @@ func parse(c *caddy.Controller) (*Sign, error) {
 		if len(args) > 0 {
 			origins = args
 		}
+		for i := range origins {
+			origins[i] = plugin.Host(origins[i]).Normalize()
+		}
 
 		signers := make([]Signer, len(origins))
 		for i := range origins {

@@ -7,8 +7,8 @@ import (
 )
 
 func TestSign(t *testing.T) {
-	input := `sign db.miek.nl miek.nl {
-		key file Kmiek.nl.+013+59725
+	input := `sign testdata/db.miek.nl miek.nl {
+		key file testdata/Kmiek.nl.+013+59725
 		directory .
 		}`
 	c := caddy.NewTestController("dns", input)

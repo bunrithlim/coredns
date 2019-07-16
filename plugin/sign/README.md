@@ -68,7 +68,7 @@ sign DBFILE [ZONES...] {
 Sign the `example.org` zone contained in the file `db.example.org` and write to result to
 `/var/lib/db.example.org.signed` to let the *file* plugin pick it up and serve it.
 
-~~~
+~~~ corefile
 example.org {
     file /var/lib/coredns/db.example.org.signed
 
@@ -82,7 +82,7 @@ Or use a single zone file for *multiple* zones, note that the **ZONES** are repe
 Also note this outputs *multiple* signed output files. Here we use the default output directory
 `/var/lib/coredns`.
 
-~~~
+~~~ corefile
 . {
     file /var/lib/coredns/db.example.org.signed example.org
     file /var/lib/coredns/db.example.net example.net
@@ -95,7 +95,7 @@ Also note this outputs *multiple* signed output files. Here we use the default o
 This is the same configuration, but the zones are put in the server block, but note that you still
 need to specify what file is served for what zone in the *file* plugin:
 
-~~~
+~~~ corefile
 example.org example.net {
     file var/lib/coredns/db.example.org.signed example.org
     file var/lib/coredns/db.example.net.signed example.net
