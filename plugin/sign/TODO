@@ -3,3 +3,4 @@
 * check if we need to resign, set period to sign in time.Ticker?
 * more tests, test nsec sorting, test zone signing apex only zone etc.
 * need sorted types out of e.Elem.Types()
+// resign_test.go
